@@ -4,12 +4,12 @@ import os
 class Config(object):
     # Setting dataset directory
     CITYSCAPES_DATA_DIR = './data/cityscapes_dataset/cityscape/'
-    ADE20K_DATA_DIR = './data/ADEChallengeData2016/'
+    ADE20K_DATA_DIR = 'data/ADEChallengeData2016/'
       
-    ADE20K_eval_list = os.path.join('./data/list/ade20k_val_list.txt')
+    ADE20K_eval_list = os.path.join('ICNet-tensorflow/data/list/ade20k_val_list.txt')
     CITYSCAPES_eval_list = os.path.join('./data/list/cityscapes_val_list.txt')
     
-    ADE20K_train_list = os.path.join('./data/list/ade20k_train_list.txt')
+    ADE20K_train_list = os.path.join('ICNet-tensorflow/data/list/ade20k_train_list.txt')
     CITYSCAPES_train_list = os.path.join('./data/list/cityscapes_train_list.txt')
     
     IMG_MEAN = np.array((103.939, 116.779, 123.68), dtype=np.float32)

@@ -172,7 +172,6 @@ class ImageReader(object):
                                   _random_crop_and_pad_image_and_labels(x, y, h, w, cfg.param['ignore_label']),
                                   num_parallel_calls=cfg.N_WORKERS)
             
-            dataset = dataset.shuffle(buffer_size=500)
             dataset = dataset.batch(cfg.BATCH_SIZE, drop_remainder=True)
             dataset = dataset.repeat()
             
