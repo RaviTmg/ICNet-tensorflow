@@ -31,6 +31,8 @@ def get_arguments():
     parser.add_argument("--filter-scale", type=int, default=1,
                         help="1 for using pruned model, while 2 for using non-pruned model.",
                         choices=[1, 2])
+    parser.add_argument("--checkpoint", type=int, default=0, 
+                        help="checkpoint to restore from")
     return parser.parse_args()
 
 def get_mask(gt, num_classes, ignore_label):
@@ -78,7 +80,7 @@ class TrainConfig(Config):
 
     # Set pre-trained weights here (You can download weight using `python script/download_weights.py`) 
     # Note that you need to use "bnnomerge" version.
-    model_weight = 'model/ade20k/model.ckpt-27150'
+    model_weight = 'model/ade20k/model.ckpt-'
     
     # Set hyperparameters here, you can get much more setting in Config Class, see 'utils/config.py' for details.
     LAMBDA1 = 0.16
@@ -142,11 +144,11 @@ def main():
     
     # Create session & restore weights (Here we only need to use train_net to create session since we reuse it)
     train_net.create_session()
-    train_net.restore(cfg.model_weight, restore_var)
+    train_net.restore(cfg.model_weight + args.checkpoint, restore_var)
     saver = tf.train.Saver(var_list=tf.global_variables(), max_to_keep=5)
-
+    ckp = args.checkpoint
     # Iterate over training steps.
-    for step in range(cfg.TRAINING_STEPS):
+    for step in range(ckp, cfg.TRAINING_STEPS):
         start_time = time.time()
             
         feed_dict = {step_ph: step}
@@ -157,6 +159,7 @@ def main():
             loss_value, loss1, loss2, loss3, val_loss_value, _ = train_net.sess.run([reduced_loss, loss_sub4, loss_sub24, loss_sub124, val_reduced_loss, train_op], feed_dict=feed_dict)            
 
         duration = time.time() - start_time
+        
         print('step {:d} \t total loss = {:.3f}, sub4 = {:.3f}, sub24 = {:.3f}, sub124 = {:.3f}, val_loss: {:.3f} ({:.3f} sec/step)'.\
                     format(step, loss_value, loss1, loss2, loss3, val_loss_value, duration))
     
